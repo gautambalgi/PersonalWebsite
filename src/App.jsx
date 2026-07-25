@@ -181,6 +181,8 @@ export default function App() {
           <span>React · Vite · shadergradient</span>
         </footer>
       </main>
+
+      <Dock />
     </>
   );
 }
