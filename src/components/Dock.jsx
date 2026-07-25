@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   motion,
   useMotionValue,
@@ -15,26 +16,20 @@ import {
   Mail,
 } from "lucide-react";
 
-// Each item scrolls to a section id in App.jsx.
-// Make sure your sections use these exact ids: top, about, projects, experience, education, contact
+// Each item navigates to a page route.
 const items = [
-  { title: "Home", icon: Home, target: "top" },
-  { title: "About", icon: User, target: "about" },
-  { title: "Projects", icon: FolderGit2, target: "projects" },
-  { title: "Experience", icon: Briefcase, target: "experience" },
-  { title: "Education", icon: GraduationCap, target: "education" },
-  { title: "Contact", icon: Mail, target: "contact" },
+  { title: "Home", icon: Home, path: "/" },
+  { title: "About", icon: User, path: "/about" },
+  { title: "Projects", icon: FolderGit2, path: "/projects" },
+  { title: "Experience", icon: Briefcase, path: "/experience" },
+  { title: "Education", icon: GraduationCap, path: "/education" },
+  { title: "Contact", icon: Mail, path: "/contact" },
 ];
 
 const BASE = 44;      // resting icon size
 const MAG = 68;       // magnified size on hover
 const DISTANCE = 130; // how far from cursor the magnify reaches
 const SPRING = { mass: 0.1, stiffness: 150, damping: 12 };
-
-function scrollToId(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-}
 
 export default function Dock() {
   const mouseX = useMotionValue(Infinity);
@@ -56,6 +51,9 @@ export default function Dock() {
 function DockItem({ item, mouseX }) {
   const ref = useRef(null);
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const active = location.pathname === item.path;
 
   const distance = useTransform(mouseX, (val) => {
     const rect = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
@@ -70,12 +68,12 @@ function DockItem({ item, mouseX }) {
     <motion.button
       ref={ref}
       style={{ width: size, height: size }}
-      className="dock-item"
+      className={`dock-item${active ? " active" : ""}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
-      onClick={() => scrollToId(item.target)}
+      onClick={() => navigate(item.path)}
       aria-label={item.title}
     >
       <AnimatePresence>
