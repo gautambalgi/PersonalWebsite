@@ -64,13 +64,13 @@ function inRange(index, length) {
   return Math.min(Math.max(0, index), Math.max(0, length - 1));
 }
 
-// GitHub logo (inline SVG, colored via currentColor)
+// GitHub logo — forced white so it reads on the black dot
 function GithubIcon({ className }) {
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke="#ffffff"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -90,7 +90,7 @@ function GithubDot({ repo, name }) {
       rel="noreferrer"
       onClick={(e) => e.stopPropagation()}
       aria-label={`Open ${name} on GitHub`}
-      className="group/gh absolute right-4 top-4 z-20 grid size-14 place-items-center rounded-full bg-zinc-950 text-white shadow-lg shadow-black/25 transition-transform duration-200 hover:scale-110"
+      className="group/gh absolute right-4 top-4 z-20 grid size-14 place-items-center rounded-full bg-zinc-950 shadow-lg shadow-black/25 transition-transform duration-300 hover:scale-110"
     >
       <GithubIcon className="h-1/2 w-1/2" />
       <span className="pointer-events-none absolute -top-10 left-1/2 origin-bottom -translate-x-1/2 scale-0 rounded-lg border border-black/10 bg-white px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-md transition-transform duration-200 group-hover/gh:scale-100">
@@ -104,8 +104,8 @@ export function OrbitCardStack({
   items = projects,
   className,
   defaultActiveIndex = 2,
-  spread = 215,
-  lift = 46,
+  spread = 222,
+  lift = 50,
 }) {
   const reduceMotion = useReducedMotion() ?? false;
   const cards = items.length ? items : projects;
@@ -127,13 +127,15 @@ export function OrbitCardStack({
     [cards, midpoint, spread]
   );
 
+  const dur = reduceMotion ? "0ms" : "560ms";
+
   return (
     <div
       className={cn("relative flex w-full items-center justify-center p-4", className)}
     >
       <div
         ref={stageRef}
-        className="relative h-[600px] w-full max-w-[1200px]"
+        className="relative h-[620px] w-full max-w-[1220px]"
         onMouseLeave={() => setActiveIndex(restingIndex)}
         role="list"
         aria-label="Project card stack"
@@ -146,7 +148,10 @@ export function OrbitCardStack({
             transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${
               pos.y - (active ? lift : 0)
             }px)) rotate(${active ? 0 : pos.rotation}deg) scale(${active ? 1.03 : 1})`,
-            transitionDuration: reduceMotion ? "0ms" : "460ms",
+            transitionProperty: "transform, box-shadow",
+            transitionDuration: dur,
+            transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+            willChange: "transform",
           };
 
           return (
@@ -155,10 +160,7 @@ export function OrbitCardStack({
               role="listitem"
               tabIndex={0}
               aria-current={active ? "true" : undefined}
-              className={cn(
-                "absolute left-1/2 top-1/2 w-[min(90vw,25rem)] origin-bottom cursor-pointer rounded-[2rem] border border-black/10 bg-[#f4f1ea] p-4 text-[#141414] shadow-[0_24px_70px_rgba(20,16,10,0.16)] outline-none",
-                "transition-[transform] ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:ring-2 focus-visible:ring-zinc-950/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-              )}
+              className="absolute left-1/2 top-1/2 w-[min(90vw,25rem)] origin-bottom cursor-pointer rounded-[2rem] border border-black/10 bg-[#f4f1ea] p-4 text-[#141414] shadow-[0_24px_70px_rgba(20,16,10,0.16)] outline-none focus-visible:ring-2 focus-visible:ring-zinc-950/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               style={style}
               onMouseEnter={() => setActiveIndex(index)}
               onFocus={() => setActiveIndex(index)}
@@ -184,28 +186,33 @@ export function OrbitCardStack({
                 </span>
               </div>
 
-              {/* details — only revealed on the active card */}
+              {/* details — smooth height reveal via grid-rows, only on the active card */}
               <div
-                className={cn(
-                  "overflow-hidden px-2 transition-all duration-300 ease-out",
-                  active ? "mt-5 max-h-[24rem] opacity-100" : "mt-0 max-h-0 opacity-0"
-                )}
+                className="grid transition-all ease-out"
+                style={{
+                  gridTemplateRows: active ? "1fr" : "0fr",
+                  opacity: active ? 1 : 0,
+                  marginTop: active ? "1.25rem" : "0",
+                  transitionDuration: dur,
+                }}
               >
-                <p className="text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                  {item.role}
-                </p>
-                <h3
-                  className="mt-2 text-[1.9rem] font-semibold leading-[1.05] tracking-[-0.03em] text-zinc-950"
-                  style={{ fontFamily: "var(--display)" }}
-                >
-                  {item.name}
-                </h3>
-                <p className="mt-3 text-[0.98rem] font-medium leading-[1.45] tracking-[-0.01em] text-zinc-700">
-                  {item.description}
-                </p>
-                <p className="mt-4 border-t border-black/10 pt-4 font-mono text-[0.74rem] text-zinc-500">
-                  {item.tech}
-                </p>
+                <div className="min-h-0 overflow-hidden px-2">
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                    {item.role}
+                  </p>
+                  <h3
+                    className="mt-2 text-[1.75rem] font-semibold leading-[1.06] tracking-[-0.03em] text-zinc-950"
+                    style={{ fontFamily: "var(--display)" }}
+                  >
+                    {item.name}
+                  </h3>
+                  <p className="mt-3 max-w-[22rem] text-[0.95rem] font-medium leading-[1.45] tracking-[-0.01em] text-zinc-700">
+                    {item.description}
+                  </p>
+                  <p className="mt-4 border-t border-black/10 pt-4 font-mono text-[0.72rem] text-zinc-500">
+                    {item.tech}
+                  </p>
+                </div>
               </div>
             </article>
           );
