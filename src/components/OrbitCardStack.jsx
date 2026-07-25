@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
+import { Github } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 
@@ -65,40 +65,35 @@ function inRange(index, length) {
   return Math.min(Math.max(0, index), Math.max(0, length - 1));
 }
 
-function CardHeader({ item }) {
+function GithubDot({ repo, name }) {
   return (
-    <div
-      className="relative flex aspect-[1.9] w-full overflow-hidden rounded-[1.4rem] border border-black/[0.08]"
-      style={{
-        background: `radial-gradient(circle at 28% 22%, ${item.accent}, #eeeae2 74%)`,
-      }}
+    <a
+      href={repo}
+      target="_blank"
+      rel="noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      aria-label={`Open ${name} on GitHub`}
+      className="group/gh absolute right-4 top-4 z-20 grid size-14 place-items-center rounded-full bg-zinc-950 text-white shadow-lg shadow-black/25 transition-transform duration-200 hover:scale-110"
     >
-      <span className="absolute left-5 top-4 font-mono text-[0.7rem] font-semibold tracking-[0.16em] text-zinc-900/70">
-        {item.period}
+      <Github className="h-1/2 w-1/2" aria-hidden />
+      <span className="pointer-events-none absolute -top-10 left-1/2 origin-bottom -translate-x-1/2 scale-0 rounded-lg border border-black/10 bg-white px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-md transition-transform duration-200 group-hover/gh:scale-100">
+        GitHub
       </span>
-      <span
-        className="absolute bottom-1 right-5 text-[3.6rem] font-bold leading-none tracking-[-0.04em] text-zinc-950/80"
-        style={{ fontFamily: "var(--display)" }}
-      >
-        {item.num}
-      </span>
-    </div>
+    </a>
   );
 }
 
 export function OrbitCardStack({
   items = projects,
   className,
-  cardClassName,
   defaultActiveIndex = 2,
-  spread = 205,
-  lift = 40,
+  spread = 215,
+  lift = 46,
 }) {
   const reduceMotion = useReducedMotion() ?? false;
   const cards = items.length ? items : projects;
   const restingIndex = inRange(defaultActiveIndex, cards.length);
   const [activeIndex, setActiveIndex] = useState(restingIndex);
-  const [open, setOpen] = useState(false);
   const stageRef = useRef(null);
   const midpoint = (cards.length - 1) / 2;
 
@@ -106,55 +101,35 @@ export function OrbitCardStack({
     () =>
       cards.map((_, index) => {
         const orbit = index - midpoint;
-        const stack = index - restingIndex;
         return {
-          open: {
-            x: orbit * spread,
-            y: Math.abs(orbit) * 16,
-            rotation: orbit * 5,
-          },
-          closed: {
-            x: stack * 12,
-            y: Math.abs(stack) * 5,
-            rotation: stack * 2.6,
-          },
+          x: orbit * spread,
+          y: Math.abs(orbit) * 14,
+          rotation: orbit * 5,
         };
       }),
-    [cards, midpoint, restingIndex, spread]
+    [cards, midpoint, spread]
   );
-
-  const activate = (index) => {
-    setOpen(true);
-    setActiveIndex(inRange(index, cards.length));
-  };
-  const close = () => {
-    setOpen(false);
-    setActiveIndex(restingIndex);
-  };
 
   return (
     <div
-      className={cn(
-        "relative flex w-full items-center justify-center p-4",
-        className
-      )}
+      className={cn("relative flex w-full items-center justify-center p-4", className)}
     >
       <div
         ref={stageRef}
-        className="relative h-[560px] w-full max-w-[1120px]"
-        onMouseLeave={close}
+        className="relative h-[600px] w-full max-w-[1200px]"
+        onMouseLeave={() => setActiveIndex(restingIndex)}
         role="list"
         aria-label="Project card stack"
       >
         {cards.map((item, index) => {
-          const position = open ? layouts[index].open : layouts[index].closed;
+          const pos = layouts[index];
           const active = index === activeIndex;
           const style = {
-            zIndex: active ? 80 : 50 - Math.abs(index - activeIndex),
-            transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${
-              position.y - (open && active ? lift : 0)
-            }px)) rotate(${position.rotation}deg) scale(${open ? 1 : 0.97})`,
-            transitionDuration: reduceMotion ? "0ms" : "440ms",
+            zIndex: active ? 90 : 50 - Math.abs(index - activeIndex),
+            transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${
+              pos.y - (active ? lift : 0)
+            }px)) rotate(${active ? 0 : pos.rotation}deg) scale(${active ? 1.03 : 1})`,
+            transitionDuration: reduceMotion ? "0ms" : "460ms",
           };
 
           return (
@@ -164,55 +139,56 @@ export function OrbitCardStack({
               tabIndex={0}
               aria-current={active ? "true" : undefined}
               className={cn(
-                "absolute left-1/2 top-1/2 w-[min(88vw,24rem)] origin-bottom cursor-pointer rounded-[2rem] border border-black/10 bg-[#f3f0e9] p-5 text-[#141414] shadow-[0_20px_60px_rgba(20,16,10,0.12)] outline-none",
-                "transition-[transform] ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:ring-2 focus-visible:ring-zinc-950/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                cardClassName
+                "absolute left-1/2 top-1/2 w-[min(90vw,25rem)] origin-bottom cursor-pointer rounded-[2rem] border border-black/10 bg-[#f4f1ea] p-4 text-[#141414] shadow-[0_24px_70px_rgba(20,16,10,0.16)] outline-none",
+                "transition-[transform] ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:ring-2 focus-visible:ring-zinc-950/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               )}
               style={style}
-              onMouseEnter={() => activate(index)}
-              onFocus={() => activate(index)}
-              onClick={() => activate(index)}
+              onMouseEnter={() => setActiveIndex(index)}
+              onFocus={() => setActiveIndex(index)}
+              onClick={() => setActiveIndex(index)}
             >
-              <div className="relative">
-                <CardHeader item={item} />
-                <a
-                  href={item.repo}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label={`Open ${item.name} on GitHub`}
-                  className="absolute right-3 top-3 grid size-12 place-items-center rounded-full bg-zinc-950 text-white shadow-lg shadow-black/20 transition-transform hover:scale-110"
+              <GithubDot repo={item.repo} name={item.name} />
+
+              {/* colored tile */}
+              <div
+                className="relative flex aspect-[1.4] w-full overflow-hidden rounded-[1.5rem] border border-black/[0.08]"
+                style={{
+                  background: `radial-gradient(circle at 28% 22%, ${item.accent}, #eeeae2 76%)`,
+                }}
+              >
+                <span className="absolute left-5 top-4 font-mono text-[0.72rem] font-semibold tracking-[0.16em] text-zinc-900/70">
+                  {item.period}
+                </span>
+                <span
+                  className="absolute bottom-1 right-5 text-[3.8rem] font-bold leading-none tracking-[-0.04em] text-zinc-950/80"
+                  style={{ fontFamily: "var(--display)" }}
                 >
-                  <ArrowUpRight className="size-5" aria-hidden />
-                </a>
+                  {item.num}
+                </span>
               </div>
-              <div className="px-1 pb-1 pt-6">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+
+              {/* details — only revealed on the active card */}
+              <div
+                className={cn(
+                  "overflow-hidden px-2 transition-all duration-300 ease-out",
+                  active ? "mt-5 max-h-[24rem] opacity-100" : "mt-0 max-h-0 opacity-0"
+                )}
+              >
+                <p className="text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
                   {item.role}
                 </p>
                 <h3
-                  className="mt-2 text-[1.75rem] font-semibold leading-[1.06] tracking-[-0.03em] text-zinc-950"
+                  className="mt-2 text-[1.9rem] font-semibold leading-[1.05] tracking-[-0.03em] text-zinc-950"
                   style={{ fontFamily: "var(--display)" }}
                 >
                   {item.name}
                 </h3>
-                <p className="mt-3 text-[0.95rem] font-medium leading-[1.45] tracking-[-0.01em] text-zinc-700">
+                <p className="mt-3 text-[0.98rem] font-medium leading-[1.45] tracking-[-0.01em] text-zinc-700">
                   {item.description}
                 </p>
-                <div className="mt-5 flex items-center justify-between border-t border-black/10 pt-4">
-                  <span className="font-mono text-[0.72rem] text-zinc-500">
-                    {item.tech}
-                  </span>
-                  <a
-                    href={item.repo}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-1 font-mono text-[0.72rem] font-bold uppercase tracking-[0.12em] text-zinc-900 hover:text-zinc-950"
-                  >
-                    GitHub <ArrowUpRight className="size-3.5" aria-hidden />
-                  </a>
-                </div>
+                <p className="mt-4 border-t border-black/10 pt-4 font-mono text-[0.74rem] text-zinc-500">
+                  {item.tech}
+                </p>
               </div>
             </article>
           );
