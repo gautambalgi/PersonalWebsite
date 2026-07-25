@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Dock from "./components/Dock";
+import Home from "./pages/Home";
 
-// Each page is blank white for now.
-// We'll fill these in one at a time — just add your content inside the matching <Page>.
+// Blank pages for the routes we haven't built yet.
 function Page({ name }) {
   return <main className="page" data-page={name} />;
 }
@@ -11,7 +11,7 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Page name="home" />} />
+        <Route path="/" element={<Home />} />
         <Route path="/about" element={<Page name="about" />} />
         <Route path="/projects" element={<Page name="projects" />} />
         <Route path="/experience" element={<Page name="experience" />} />
