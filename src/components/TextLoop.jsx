@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Words roll UP: the new word rises from below while the old one slides up and out.
+// New word enters from BELOW and rises up; old word slides up and out the top.
 export default function TextLoop({ items, className = "", interval = 2200 }) {
   const [index, setIndex] = useState(0);
 
@@ -18,10 +18,10 @@ export default function TextLoop({ items, className = "", interval = 2200 }) {
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={index}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
+          initial={{ y: "110%" }}      /* start below the line */
+          animate={{ y: "0%" }}        /* rise into place */
+          exit={{ y: "-110%" }}        /* slide up and out the top */
+          transition={{ duration: 0.55, ease: [0.22, 0.9, 0.24, 1] }}
           style={{ display: "block" }}
         >
           {items[index]}
