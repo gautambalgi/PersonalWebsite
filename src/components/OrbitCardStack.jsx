@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Github } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 
@@ -65,6 +64,24 @@ function inRange(index, length) {
   return Math.min(Math.max(0, index), Math.max(0, length - 1));
 }
 
+// GitHub logo (inline SVG, colored via currentColor)
+function GithubIcon({ className }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </svg>
+  );
+}
+
 function GithubDot({ repo, name }) {
   return (
     <a
@@ -75,7 +92,7 @@ function GithubDot({ repo, name }) {
       aria-label={`Open ${name} on GitHub`}
       className="group/gh absolute right-4 top-4 z-20 grid size-14 place-items-center rounded-full bg-zinc-950 text-white shadow-lg shadow-black/25 transition-transform duration-200 hover:scale-110"
     >
-      <Github className="h-1/2 w-1/2" aria-hidden />
+      <GithubIcon className="h-1/2 w-1/2" />
       <span className="pointer-events-none absolute -top-10 left-1/2 origin-bottom -translate-x-1/2 scale-0 rounded-lg border border-black/10 bg-white px-3 py-1.5 text-xs font-bold text-zinc-900 shadow-md transition-transform duration-200 group-hover/gh:scale-100">
         GitHub
       </span>
