@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Dock from "./components/Dock";
+import Social from "./components/Social";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 
@@ -11,6 +12,8 @@ function Page({ name }) {
 export default function App() {
   return (
     <>
+      <Social />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<Page name="about" />} />

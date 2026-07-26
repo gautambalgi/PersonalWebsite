@@ -10,7 +10,7 @@ export default function Projects() {
           fontWeight: 600,
           letterSpacing: "-0.03em",
           fontSize: "clamp(34px, 6vw, 62px)",
-          lineHeight: 1,
+          lineHeight: 0.5,
         }}
       >
         Projects

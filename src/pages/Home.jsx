@@ -1,4 +1,5 @@
 import TextEffect from "../components/TextEffect";
+import RoleRotator from "../components/RoleRotator";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
         <h1 className="home-name">
           <TextEffect text="Gautam Krishna Balgi" />
         </h1>
+        <RoleRotator />
       </div>
     </main>
   );
