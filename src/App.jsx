@@ -3,6 +3,7 @@ import Dock from "./components/Dock";
 import Social from "./components/Social";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
+import ProjectPage from "./pages/ProjectPage";
 
 // Blank pages for the routes we haven't built yet.
 function Page({ name }) {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<Page name="about" />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:slug" element={<ProjectPage />} />
         <Route path="/experience" element={<Page name="experience" />} />
         <Route path="/education" element={<Page name="education" />} />
         <Route path="/contact" element={<Page name="contact" />} />

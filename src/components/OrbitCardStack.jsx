@@ -1,54 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-
-const projects = [
-  {
-    name: "Ethics-Aware Sports Betting ML System",
-    role: "ML · Reinforcement Learning",
-    period: "Aug to Dec 2025",
-    tech: "XGBoost · DQN · DeBERTa",
-    accent: "#f8d66d",
-    num: "01",
-    repo: "https://github.com/BettingApp-hcai/betting_edge",
-  },
-  {
-    name: "Smart Grocery Detection & Recommendation",
-    role: "Computer Vision",
-    period: "Jan to May 2025",
-    tech: "YOLOv5 · PyTorch · ONNX",
-    accent: "#78dcca",
-    num: "02",
-    repo: "https://github.com/gautambalgi/SmartGrocerySystem",
-  },
-  {
-    name: "Emotion-Aware Voice Messaging System",
-    role: "NLP · Speech",
-    period: "Jan to May 2025",
-    tech: "GoEmotions · TTS · NLP",
-    accent: "#b9a7ff",
-    num: "03",
-    repo: "https://github.com/gautambalgi/Emotion-Aware-Personalized-Voice-Messaging-System",
-  },
-  {
-    name: "E-Learning Database System",
-    role: "Data · BI",
-    period: "Aug to Dec 2024",
-    tech: "SQL · Power BI",
-    accent: "#ff9d77",
-    num: "04",
-    repo: "https://github.com/gautambalgi/E-Learning-Database-Management-Sysytem",
-  },
-  {
-    name: "South Carolina Energy Analysis",
-    role: "Statistics · Analytics",
-    period: "Aug to Dec 2024",
-    tech: "R · Shiny",
-    accent: "#7cc4ff",
-    num: "05",
-    repo: "https://github.com/gautambalgi/South-Carolina-Weather-Analysis",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { projects } from "../data/projects";
 
 function inRange(index, length) {
   return Math.min(Math.max(0, index), Math.max(0, length - 1));
@@ -101,6 +55,7 @@ export function OrbitCardStack({
   lift = 34,
 }) {
   const reduceMotion = useReducedMotion() ?? false;
+  const navigate = useNavigate();
   const cards = items.length ? items : projects;
   const restingIndex = inRange(defaultActiveIndex, cards.length);
   const [activeIndex, setActiveIndex] = useState(restingIndex);
@@ -180,7 +135,7 @@ export function OrbitCardStack({
               style={style}
               onMouseEnter={() => setActiveIndex(index)}
               onFocus={() => setActiveIndex(index)}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => navigate(`/projects/${item.slug}`)}
             >
               <div className="relative">
                 <CardHeader item={item} />

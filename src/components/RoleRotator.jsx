@@ -30,11 +30,11 @@ export default function RoleRotator({ interval = 2200 }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -40, opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="absolute flex items-center gap-2.5"
+          className="absolute flex items-center gap-2.5 whitespace-nowrap"
           style={{ fontFamily: "var(--display)" }}
         >
           <span className="h-2 w-2 rounded-full bg-zinc-400" />
-          <span className="text-[clamp(15px,2.4vw,22px)] font-medium tracking-[-0.01em] text-zinc-400">
+          <span className="whitespace-nowrap text-[clamp(15px,2.4vw,22px)] font-medium tracking-[-0.01em] text-zinc-400">
             {roles[index]}
           </span>
         </motion.div>
